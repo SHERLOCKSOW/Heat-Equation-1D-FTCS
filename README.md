@@ -6,29 +6,7 @@
 ## 💡 Présentation du Projet
 Ce projet académique est un solveur numérique pour l'**Équation de la Chaleur en une dimension** ($\frac{\partial u}{\partial t} = \alpha \frac{\partial^2 u}{\partial x^2}$). Il simule l'évolution de la température dans une barre isolée en fonction du temps et de la position.
 
-Le code est implémenté en Python et utilise la bibliothèque `ipywidgets` pour une **interface utilisateur interactive** dans Google Colab, permettant d'ajuster les paramètres physiques et numériques.
-
----
-
-## ⚙️ Méthode Numérique : Différences Finies Explicites (FTCS)
-
-Le cœur du solveur est une implémentation **manuelle** de la méthode des **Différences Finies Explicites** (Forward-Time, Central-Space - FTCS).
-
-### 1. Formule de Mise à Jour
-La simulation procède par itération temporelle en utilisant la formule explicite, qui calcule la température au temps $k+1$ à partir des valeurs au temps $k$ :
-
-$$u_i^{k+1} = u_i^k + r (u_{i+1}^k - 2u_i^k + u_{i-1}^k)$$
-
-Où $r$ est le **paramètre de Fourier** : $r = \frac{\alpha \Delta t}{(\Delta x)^2}$.
-
-### 2. Condition de Stabilité
-La méthode FTCS est conditionnellement stable. Le pas de temps ($\Delta t$) est calculé pour respecter le **Critère de Von Neumann** :
-$$r \leq \frac{1}{2}$$
-Le code vérifie cette condition et utilise un facteur de sécurité ($dt\_factor=0.45$) pour éviter la divergence, tout en affichant un avertissement si la limite est dépassée.
-
-### 3. Conditions aux Limites Supportées
-* **Dirichlet :** Température fixe ($u$ spécifiée sur le bord).
-* **Neumann :** Flux de chaleur fixe ($\partial u / \partial x$ spécifiée sur le bord ; flux nul pour l'isolation).
+Le code est implémenté en Python et utilise la bibliothèque `ipywidgets` pour une **interface utilisateur interactive** dans Google Colab.
 
 ---
 
@@ -36,26 +14,48 @@ Le code vérifie cette condition et utilise un facteur de sécurité ($dt\_facto
 
 Le moyen le plus simple d'exécuter et d'interagir avec ce projet est via Google Colab.
 
-1.  **Ouvrir le Notebook :**
-    * [Collez ici le badge "Ouvrir dans Colab"]
-    * *(Pour générer le badge, utilisez le format : `[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](Lien_direct_vers_votre_fichier_ipynb_sur_GitHub)`)*
-2.  Exécutez la seule cellule de code du Notebook.
-3.  Utilisez l'interface **interactive** pour :
-    * Définir la **Longueur**, le **Temps total** et la **Diffusivité ($\alpha$)**.
-    * Choisir la **Température Initiale** (Sinusoïdale, Gaussienne, etc.).
-    * Configurer les **Conditions aux Limites** à Gauche et à Droite.
-4.  Cliquez sur **`Exécuter la Simulation`** (bouton vert).
-5.  Cliquez sur **`Animer l'Évolution`** (bouton orange) pour voir le graphique des courbes.
+### 1. Accès au Notebook
+**Ouvrez le simulateur directement dans Colab :**
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/SHERLOCKSOW/Heat-Equation-1D-FTCS/blob/main/heat_equation_par_moussa_sow.ipynb)
+
+*Le fichier du solveur est :* `heat_equation_par_moussa_sow.py` (ou `.ipynb`)
+
+### 2. Étapes de Simulation
+1.  Exécutez la seule cellule de code du Notebook après l'avoir ouvert.
+2.  Utilisez l'interface **interactive** pour ajuster les paramètres physiques et numériques.
+3.  Cliquez sur **`Exécuter la Simulation`** (bouton vert).
+4.  Cliquez sur **`Animer l'Évolution`** (bouton orange) pour visualiser le profil de température au fil du temps.
+
+---
+
+## ⚙️ Détails de la Méthode Numérique : Différences Finies Explicites (FTCS)
+
+### Formule de Mise à Jour
+Le cœur du solveur est une implémentation **manuelle** de la méthode FTCS :
+
+$$u_i^{k+1} = u_i^k + r (u_{i+1}^k - 2u_i^k + u_{i-1}^k)$$
+
+Où $r$ est le **paramètre de Fourier** : $r = \frac{\alpha \Delta t}{(\Delta x)^2}$.
+
+### Condition de Stabilité
+La stabilité est garantie si le **Critère de Von Neumann** est respecté : $r \leq \frac{1}{2}$. Le code calcule $\Delta t$ pour satisfaire cette condition mais affichera un avertissement en cas de paramétrage instable.
+
+### Conditions aux Limites Supportées
+* **Dirichlet :** Température fixe ($u$ spécifiée).
+* **Neumann :** Flux de chaleur fixe ($\partial u / \partial x$ spécifiée).
 
 ---
 
 ## 📊 Analyse des Données
 
-Pour l'analyse académique, toutes les données de la simulation (`x`, `t`, `u`) sont stockées dans la variable globale **`simulation_data`** après avoir cliqué sur **`Afficher les Données`**.
+Pour l'analyse académique, les données complètes de la simulation (`x` : position, `t` : temps, `u` : matrice de température) sont stockées dans la variable globale **`simulation_data`** après avoir cliqué sur le bouton **`Afficher les Données`**.
 
-Vous pouvez ensuite utiliser une nouvelle cellule Colab pour tracer des courbes spécifiques, par exemple :
+Ceci permet de générer des **courbes personnalisées** dans une cellule de code séparée pour l'analyse des profils de température et de l'évolution temporelle.
 
 ```python
-# Tracer le profil de température au temps final
-plt.plot(simulation_data['x'], simulation_data['u'][-1, :], label='Température Finale') 
-plt.show()
+# Exemple d'accès aux données dans Colab :
+import matplotlib.pyplot as plt
+# Assurez-vous d'avoir exécuté la simulation !
+# plt.plot(simulation_data['x'], simulation_data['u'][-1, :], label='Température Finale') 
+# plt.show()
